@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign Up — Demo Web App</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      background: #f0f4f8;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+
+    .card {
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+      padding: 48px 40px;
+      width: 100%;
+      max-width: 440px;
+    }
+
+    .card h1 {
+      font-size: 1.75rem;
+      font-weight: 700;
+      color: #1e3a5f;
+      margin-bottom: 8px;
+    }
+
+    .card .subtitle {
+      color: #64748b;
+      font-size: 0.95rem;
+      margin-bottom: 32px;
+    }
+
+    .field {
+      margin-bottom: 20px;
+    }
+
+    label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: #374151;
+      margin-bottom: 6px;
+    }
+
+    input {
+      width: 100%;
+      padding: 10px 14px;
+      border: 1.5px solid #d1d5db;
+      border-radius: 8px;
+      font-size: 0.95rem;
+      color: #111827;
+      transition: border-color 0.15s, box-shadow 0.15s;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: #2e75b6;
+      box-shadow: 0 0 0 3px rgba(46,117,182,0.15);
+    }
+
+    input.error {
+      border-color: #dc2626;
+      box-shadow: 0 0 0 3px rgba(220,38,38,0.1);
+    }
+
+    .error-msg {
+      display: none;
+      font-size: 0.8rem;
+      color: #dc2626;
+      margin-top: 5px;
+    }
+
+    .error-msg.visible {
+      display: block;
+    }
+
+    button[type="submit"] {
+      width: 100%;
+      padding: 12px;
+      background: #1f4e8c;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: background 0.15s, transform 0.1s;
+    }
+
+    button[type="submit"]:hover { background: #163d70; }
+    button[type="submit"]:active { transform: scale(0.99); }
+
+    .success {
+      display: none;
+      text-align: center;
+      padding: 16px 0;
+    }
+
+    .success .checkmark {
+      font-size: 3rem;
+      margin-bottom: 16px;
+    }
+
+    .success h2 {
+      font-size: 1.4rem;
+      font-weight: 700;
+      color: #1e3a5f;
+      margin-bottom: 8px;
+    }
+
+    .success p {
+      color: #64748b;
+      font-size: 0.95rem;
+    }
+
+    @media (max-width: 480px) {
+      .card { padding: 32px 24px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="card">
+
+    <form id="signup-form" novalidate>
+      <h1>Create your account</h1>
+      <p class="subtitle">Get started — it only takes a moment.</p>
+
+      <div class="field">
+        <label for="fullname">Full Name</label>
+        <input type="text" id="fullname" placeholder="Jane Smith" autocomplete="name" />
+        <span class="error-msg" id="fullname-error">Please enter your full name.</span>
+      </div>
+
+      <div class="field">
+        <label for="email">Email Address</label>
+        <input type="email" id="email" placeholder="jane@example.com" autocomplete="email" />
+        <span class="error-msg" id="email-error">Please enter a valid email address.</span>
+      </div>
+
+      <div class="field">
+        <label for="password">Password</label>
+        <input type="password" id="password" placeholder="Choose a password" autocomplete="new-password" />
+        <span class="error-msg" id="password-error">Please enter a password.</span>
+      </div>
+
+      <div class="field">
+        <label for="confirm">Confirm Password</label>
+        <input type="password" id="confirm" placeholder="Repeat your password" autocomplete="new-password" />
+        <span class="error-msg" id="confirm-error">Passwords do not match.</span>
+      </div>
+
+      <button type="submit">Create Account</button>
+    </form>
+
+    <div class="success" id="success">
+      <div class="checkmark">✅</div>
+      <h2 id="success-msg">Account created!</h2>
+      <p>Welcome aboard. You're all set.</p>
+    </div>
+
+  </div>
+
+  <script>
+    const form = document.getElementById('signup-form');
+    const successEl = document.getElementById('success');
+
+    function setError(inputId, errorId, show) {
+      const input = document.getElementById(inputId);
+      const msg   = document.getElementById(errorId);
+      input.classList.toggle('error', show);
+      msg.classList.toggle('visible', show);
+      return show;
+    }
+
+    function isValidEmail(val) {
+      return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(val);
+    }
+
+    form.addEventListener('submit', e => {
+      e.preventDefault();
+
+      const name     = document.getElementById('fullname').value.trim();
+      const email    = document.getElementById('email').value.trim();
+      const password = document.getElementById('password').value;
+      const confirm  = document.getElementById('confirm').value;
+
+      let hasError = false;
+      if (setError('fullname', 'fullname-error', !name))          hasError = true;
+      if (setError('email',    'email-error',    !isValidEmail(email))) hasError = true;
+      if (setError('password', 'password-error', !password))      hasError = true;
+      if (setError('confirm',  'confirm-error',  password !== confirm)) hasError = true;
+
+      if (!hasError) {
+        form.style.display = 'none';
+        successEl.style.display = 'block';
+        document.getElementById('success-msg').textContent =
+          'Account created! Welcome, ' + name + '.';
+      }
+    });
+
+    // Clear errors on input
+    ['fullname','email','password','confirm'].forEach(id => {
+      document.getElementById(id).addEventListener('input', () => {
+        document.getElementById(id).classList.remove('error');
+        document.getElementById(id + '-error').classList.remove('visible');
+      });
+    });
+  </script>
+</body>
+</html>
